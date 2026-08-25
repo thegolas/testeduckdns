@@ -1,0 +1,26 @@
+name: Sincronizar Network List Azion
+
+on:
+  schedule:
+    # Roda a cada 6 horas (minuto 0 da hora 0, 6, 12 e 18 em UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permite disparar manualmente pelo painel do GitHub
+
+jobs:
+  update-network-list:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Executar script de sincronização
+        env:
+          AZION_PERSONAL_TOKEN: ${{ secrets.AZION_PERSONAL_TOKEN }}
+          AZION_NETWORK_LIST_ID: ${{ secrets.AZION_NETWORK_LIST_ID }}
+        run: python update_azion.py
